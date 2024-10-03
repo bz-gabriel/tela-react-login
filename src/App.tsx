@@ -1,15 +1,31 @@
-import { useState } from 'react';
-import Login from './components/login/index'
-import './App.css'
-import Button from './components/button';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Login from './components/login';
+import Cadastro from './components/cadastro';
 
-function App() {
+const App: React.FC = () => {
   return (
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/register">Cadastro</Link>
+            </li>
+          </ul>
+        </nav>
 
-    <>
-      <Login />
-    </>
-  )
-}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Cadastro />} />
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+};
 
-export default App
+export default App;

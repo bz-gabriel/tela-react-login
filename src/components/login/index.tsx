@@ -1,19 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './styles.css'
 import Button from "../button";
 import axios from "axios";
 
 interface User {
     email: string;
-    senha: string
+    senha: string;
 }
+
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-
+    const [error, setError] = useState("");
+    const [sucess, setSuccess] = useState("");
+    const [data, setData] = useState<any>(null);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,21 +26,25 @@ const Login: React.FC = () => {
 
             if (user) {
                 setError('');
-                setSuccess('Login bem-sucedido!');
+                setSuccess("Login bem-sucedido!");
+
+                const apiResponse = await axios.get('https://jsonplaceholder.typicode.com/users');
+
+                setData(apiResponse.data);
             } else {
-                setError('Usuário ou senha inválidos');
+                setError("Email ou senha inválidos!");
                 setSuccess('');
             }
+
         } catch (err) {
-            setError('Erro ao fazer login');
-            setSuccess('');
+
         }
-    };
+    }
 
     return (
         <div className="container">
             <form onSubmit={handleLogin}>
-                <h1>Acesse o sistema</h1>
+                <h1>Login</h1>
                 <div>
                     <input
                         type="email"
@@ -56,8 +61,20 @@ const Login: React.FC = () => {
                         onChange={(e) => setSenha(e.target.value)}
                     />
                 </div>
+                {sucess && <p style={{ color: 'green' }}>{sucess}</p>}
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                {success && <p style={{ color: 'green' }}>{success}</p>}
+                {sucess &&
+                    <div>
+                        <h2>Dados da API Externa</h2>
+                        {data ? (
+                            <div>
+                                <pre>{JSON.stringify(data, null, 2)}</pre> {/* Exibindo os dados da API */}
+                            </div>
+                        ) : (
+                            <p>Carregando dados...</p>
+                        )}
+                    </div>  
+                }
                 <button
                     type="submit"
                 >
